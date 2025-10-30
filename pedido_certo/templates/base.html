@@ -1,0 +1,164 @@
+
+{% load static i18n %}
+    {% load render_bundle from webpack_loader %}
+
+  <!DOCTYPE html>
+{% get_current_language as LANGUAGE_CODE %}
+<html lang="{{ LANGUAGE_CODE }}">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <title>
+      {% block title %}
+      Pedido Certo
+    {% endblock title %}
+  </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+        content="Gerenciar pedidos de um restaurante" />
+  <meta name="author"
+        content="with" />
+  <link rel="icon" href="{% static 'images/favicons/favicon.ico' %}" />
+  {% block css %}
+<!-- Your stuff: Third-party CSS libraries go here -->
+<!-- This file stores project-specific CSS -->
+
+{% render_bundle 'project' 'css' %}
+
+
+{% endblock css %}
+<!-- Le javascript
+    ================================================== -->
+{# Placed at the top of the document so pages load faster with defer #}
+{% block javascript %}
+
+
+<!-- Vendor dependencies bundled as one file -->
+{% render_bundle 'vendors' 'js' attrs='defer' %}
+
+
+<!-- place project specific Javascript in this file -->
+
+
+{% render_bundle 'project' 'js' attrs='defer' %}
+
+
+{% endblock javascript %}
+</head>
+<body class="{% block bodyclass %}bg-light{% endblock bodyclass %}">
+{% block body %}
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-md navbar-light bg-white border-bottom fixed-top">
+  <div class="container-fluid">
+    <!-- Botão para abrir sidebar mobile -->
+    <button class="btn btn-outline-primary d-md-none me-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar">
+      ☰
+    </button>
+
+    <a class="navbar-brand" href="{% url 'home' %}">Pedido Certo</a>
+
+    <!-- Navbar toggler para links -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Links da navbar -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'home' %}">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'about' %}">About</a>
+        </li>
+        {% if request.user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'users:detail' request.user.username %}">{% translate "My Profile" %}</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'account_logout' %}">{% translate "Sign Out" %}</a>
+          </li>
+        {% else %}
+          {% if ACCOUNT_ALLOW_REGISTRATION %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'account_signup' %}">{% translate "Sign Up" %}</a>
+            </li>
+          {% endif %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'account_login' %}">{% translate "Sign In" %}</a>
+          </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Sidebar fixa desktop -->
+<nav class="col-md-3 col-lg-2 d-none d-md-block bg-white border-end vh-100 position-fixed overflow-auto pt-3">
+  <ul class="nav flex-column">
+    <li class="nav-item"><a class="nav-link active" href="#">Dashboard</a></li>
+    <li class="nav-item"><a class="nav-link" href="#">Usuários</a></li>
+    <li class="nav-item"><a class="nav-link" href="#">Configurações</a></li>
+    <li class="nav-item"><a class="nav-link" href="#">Relatórios</a></li>
+  </ul>
+</nav>
+
+<!-- Offcanvas sidebar mobile -->
+<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasSidebar">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title">Menu</h5>
+    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"></button>
+  </div>
+  <div class="offcanvas-body">
+    <ul class="nav flex-column">
+      <li class="nav-item"><a class="nav-link active" href="#">Dashboard</a></li>
+      <li class="nav-item"><a class="nav-link" href="#">Usuários</a></li>
+      <li class="nav-item"><a class="nav-link" href="#">Configurações</a></li>
+      <li class="nav-item"><a class="nav-link" href="#">Relatórios</a></li>
+    </ul>
+  </div>
+</div>
+
+<!-- Container principal -->
+<div class="container-fluid" style="padding-top: 56px;">
+
+  <!-- Messages Django -->
+  <div class="container mt-3">
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-dismissible fade show {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %}" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+  </div>
+
+  <!-- Conteúdo -->
+  <main class="col-12 col-md-9 ms-sm-auto col-lg-10 px-md-4 offset-md-3">
+    {% block main %}
+      {% block content %}
+        <p>Use this document as uma forma de iniciar rapidamente qualquer novo projeto.</p>
+      {% endblock content %}
+    {% endblock main %}
+  </main>
+</div>
+
+{% endblock body %}
+  <!-- /container -->
+  {% block modal %}
+  {% endblock modal %}
+  {% block inline_javascript %}
+    {% comment %}
+    Script tags with only code, no src (defer by default). To run
+    with a "defer" so that you run inline code:
+    <script>
+      window.addEventListener('DOMContentLoaded', () => {
+        /* Run whatever you want */
+      });
+    </script>
+    {% endcomment %}
+  {% endblock inline_javascript %}
+</body>
+</html>
