@@ -20,6 +20,7 @@ urlpatterns = [
     path("users/", include("pedido_certo.users.urls", namespace="users")),
     path("accounts/", include("allauth.urls")),
     # Your stuff: custom urls includes go here
+    path("oncomanda/",include("pedido_certo.oncomanda.urls",namespace="oncomanda")),
     # ...
     # Media files
     *static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
